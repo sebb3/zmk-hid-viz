@@ -123,7 +123,7 @@ firmware), the reported hue/saturation are dormant — treat them as advisory.
 
 ### Inbound (host → keyboard)
 
-**ZMK Studio RPC** (byte[0] = `0xB0`): Byte 1 is the payload length. Bytes 2-31 carry the next part of the standard framed ZMK Studio stream. The same report format applies in both directions. Enable `CONFIG_HID_VIZ_STUDIO=y`, then disable the built-in UART and BLE Studio transports.
+**ZMK Studio RPC** (byte[0] = `0xB0`): Byte 1 is the payload length. Bytes 2-31 carry the next part of the standard framed ZMK Studio stream. The same report format applies in both directions. Enable `CONFIG_HID_VIZ_STUDIO=y` and disable the built-in UART Studio transport. The built-in BLE transport can remain enabled.
 
 **Get device info** (byte[0] = `0xFD`): Keyboard responds with `0xFE` device info message.
 

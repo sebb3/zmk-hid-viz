@@ -72,4 +72,3 @@ ZMK_LISTENER(hid_viz_studio_rpc, studio_rpc_command_handler);
 ZMK_SUBSCRIPTION(hid_viz_studio_rpc, raw_hid_command_event);
 
 ZMK_RPC_TRANSPORT(hid_viz_usb, ZMK_TRANSPORT_USB, start_rx, stop_rx, NULL, tx_notify);
-ZMK_RPC_TRANSPORT(hid_viz_ble, ZMK_TRANSPORT_BLE, start_rx, stop_rx, NULL, tx_notify);
