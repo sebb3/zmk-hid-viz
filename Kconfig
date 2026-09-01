@@ -93,4 +93,14 @@ config HID_VIZ_CONFIG_ID
       Set this to the ID from your layout editor export, or leave empty
       for manual layout selection in the host app.
 
+config HID_VIZ_STUDIO
+    bool "ZMK Studio RPC over Raw HID"
+    default n
+    depends on HID_VIZ
+    select ZMK_STUDIO
+    help
+      Carry the standard ZMK Studio RPC byte stream in Raw HID reports.
+      This lets a native host app edit the live keymap without a serial
+      port, custom GATT access, or a MoErgo JSON export.
+
 endmenu

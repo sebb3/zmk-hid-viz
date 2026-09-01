@@ -51,4 +51,11 @@ if(CONFIG_HID_VIZ)
         target_sources(app PRIVATE src/behavior_hid_signal_fixed.c)
         # No include dir needed: ids are raw numbers / an `id` devicetree property.
     endif()
+
+    if(CONFIG_HID_VIZ_STUDIO)
+        if(CONFIG_ZMK_STUDIO_TRANSPORT_UART OR CONFIG_ZMK_STUDIO_TRANSPORT_BLE)
+            message(FATAL_ERROR "HID_VIZ_STUDIO is the ZMK Studio transport. Disable ZMK_STUDIO_TRANSPORT_UART and ZMK_STUDIO_TRANSPORT_BLE.")
+        endif()
+        target_sources(app PRIVATE src/studio_rpc_transport.c)
+    endif()
 endif()

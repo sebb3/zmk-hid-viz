@@ -69,6 +69,7 @@ All options in your `.conf` file:
 | `CONFIG_HID_VIZ_RGB` | n | RGB profile: handle `0xD1` set commands, emit `0xD0` change receipts (requires `CONFIG_ZMK_RGB_UNDERGLOW=y`) |
 | `CONFIG_HID_VIZ_SIGNAL` | n | Signal behaviors: fire opaque host-defined `0xC0` triggers on key press |
 | `CONFIG_HID_VIZ_CONFIG_ID` | "" | Layout/config identifier returned by the `0xFB` query |
+| `CONFIG_HID_VIZ_STUDIO` | n | Carry the standard ZMK Studio RPC stream over Raw HID |
 
 Raw HID transport options (`CONFIG_RAW_HID_USAGE_PAGE`, `CONFIG_RAW_HID_USAGE`, `CONFIG_RAW_HID_REPORT_SIZE`, `CONFIG_RAW_HID_DEVICE`) are owned by zmk-raw-hid — see its README for defaults and tuning.
 
@@ -121,6 +122,8 @@ always live). When the effect index selects a per-key/layer mode (fork
 firmware), the reported hue/saturation are dormant — treat them as advisory.
 
 ### Inbound (host → keyboard)
+
+**ZMK Studio RPC** (byte[0] = `0xB0`): Byte 1 is the payload length. Bytes 2-31 carry the next part of the standard framed ZMK Studio stream. The same report format applies in both directions. Enable `CONFIG_HID_VIZ_STUDIO=y`, then disable the built-in UART and BLE Studio transports.
 
 **Get device info** (byte[0] = `0xFD`): Keyboard responds with `0xFE` device info message.
 
