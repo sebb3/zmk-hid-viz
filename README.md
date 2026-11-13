@@ -297,7 +297,6 @@ CONFIG_HID_VIZ_SIGNAL=y
         signal: signal {
             compatible = "zmk,behavior-hid-signal";
             #binding-cells = <1>;
-            id = <7>;
         };
     };
 };
