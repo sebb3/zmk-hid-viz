@@ -28,7 +28,7 @@
 #define ROLE_TRIGGERS    3   /* Device originates this action (fire-and-forget) */
 
 /* ============================================================
- * Tiers — availability / stability of a capability
+ * Tiers — availability / stability of the capability
  * ============================================================ */
 #define TIER_CORE        0   /* Always present when the module is enabled */
 #define TIER_FW_SPECIFIC 1   /* Present only if the firmware implements it */
@@ -87,7 +87,7 @@
  * the listening host's config. Per-id fixed nodes advertise as "signal.fire/<id>"
  * so a host scan can enumerate exactly which ids the board fires; the flexible
  * 1-cell &signal form advertises the bare "signal.fire". 0xC1/0xC2 are reserved
- * for a future signal.value / signal.delta (analog / relative).
+ * for a future signal.value / signal.delta (analog / relative input).
  * ============================================================ */
 #define SIGNAL_FIRE          0xC0   /* signal.fire { id:uint8 } — fire-and-forget */
 
@@ -176,6 +176,7 @@ struct hid_viz_cap {
  * The index ORDER here MUST match the `enum:` list in
  * dts/bindings/behaviors/zmk,behavior-hid-viz-emit-fixed.yaml. The wire bytes
  * mirror <dt-bindings/hid_viz/emit.h> (the 2-cell &hid_viz_emit form's params).
+ *
  * The HID_VIZ_ACTION_* macros are integer/string literals, so ACTION_* below
  * resolve at compile time and are usable in static initializers (config structs
  * and the HID_VIZ_CAP_REGISTER trigger entries).
