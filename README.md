@@ -69,6 +69,7 @@ All options in your `.conf` file:
 | `CONFIG_HID_VIZ_RGB` | n | RGB profile: handle `0xD1` set commands, emit `0xD0` change receipts (requires `CONFIG_ZMK_RGB_UNDERGLOW=y`) |
 | `CONFIG_HID_VIZ_SIGNAL` | n | Signal behaviors: fire opaque host-defined `0xC0` triggers on key press |
 | `CONFIG_HID_VIZ_CONFIG_ID` | "" | Layout/config identifier returned by the `0xFB` query |
+| `CONFIG_HID_VIZ_BUILD_COMMIT` | "" | Source commit returned by the `0xF6` query (stamped by the build) |
 | `CONFIG_HID_VIZ_STUDIO` | n | Carry the standard ZMK Studio RPC stream over Raw HID |
 
 Raw HID transport options (`CONFIG_RAW_HID_USAGE_PAGE`, `CONFIG_RAW_HID_USAGE`, `CONFIG_RAW_HID_REPORT_SIZE`, `CONFIG_RAW_HID_DEVICE`) are owned by zmk-raw-hid — see its README for defaults and tuning.
@@ -105,6 +106,12 @@ Raw HID transport options (`CONFIG_RAW_HID_USAGE_PAGE`, `CONFIG_RAW_HID_USAGE`, 
 | 0 | `0xFA` | Message type |
 | 1+ | string | Layout/config ID from `CONFIG_HID_VIZ_CONFIG_ID` (null-terminated, empty if unset) |
 
+**Build commit response** (byte[0] = `0xF5`):
+| Byte | Value | Description |
+|------|-------|-------------|
+| 0 | `0xF5` | Message type |
+| 1+ | string | Source commit from `CONFIG_HID_VIZ_BUILD_COMMIT` (null-terminated, empty if the build did not stamp one) |
+
 **RGB changed** (byte[0] = `0xD0`, requires `CONFIG_HID_VIZ_RGB`):
 | Byte | Value | Description |
 |------|-------|-------------|
@@ -128,6 +135,8 @@ firmware), the reported hue/saturation are dormant — treat them as advisory.
 **Get device info** (byte[0] = `0xFD`): Keyboard responds with `0xFE` device info message.
 
 **Get config ID** (byte[0] = `0xFB`): Keyboard responds with `0xFA` config ID message. Host apps use this to auto-load the matching layout definition; an empty string means manual layout selection.
+
+**Get build commit** (byte[0] = `0xF6`): Keyboard responds with `0xF5` build commit message. The central half answers from its own image; both halves are built from the same source commit in one build, so one answer identifies the pair.
 
 **Set layer state** (byte[0] = `0xFC`):
 | Byte | Value | Description |

@@ -93,6 +93,17 @@ config HID_VIZ_CONFIG_ID
       Set this to the ID from your layout editor export, or leave empty
       for manual layout selection in the host app.
 
+config HID_VIZ_BUILD_COMMIT
+    string "Source commit the firmware image was built from"
+    default ""
+    depends on HID_VIZ_COMMANDS
+    help
+      The host build system stamps the firmware image with the source
+      commit it was built from (e.g. ZMK Live's Nix build passes the
+      flake's shortRev, or "dirty"). The host queries it with the
+      0xF6 command and the keyboard answers with 0xF5. Leave empty only
+      for builds that cannot identify their source.
+
 config HID_VIZ_STUDIO
     bool "ZMK Studio RPC over Raw HID"
     default n

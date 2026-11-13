@@ -31,17 +31,21 @@ HID_VIZ_CAP_REGISTER(cap_core_layer_set, CMD_SET_LAYER, ROLE_HANDLES, TIER_CORE,
  *   0xFD - Get device info (responds with board ID and version)
  *   0xFC - Set layer state (bytes[1-4] = uint32 bitmask of layers to activate, LE)
  *   0xFB - Get config ID (responds with layout/config identifier string)
+ *   0xF6 - Get build commit (responds with the baked source commit string)
  *
  * Responses (keyboard -> host):
  *   0xFE - Device info response
  *   0xFA - Config ID response
+ *   0xF5 - Build commit response
  */
 
 #define CMD_GET_DEVICE_INFO  0xFD
 #define CMD_SET_LAYER        0xFC
 #define CMD_GET_CONFIG_ID    0xFB
+#define CMD_GET_BUILD_COMMIT 0xF6
 #define RSP_DEVICE_INFO      0xFE
 #define RSP_CONFIG_ID        0xFA
+#define RSP_BUILD_COMMIT     0xF5
 
 #define HID_VIZ_PROTOCOL_VERSION 0x01
 
@@ -72,6 +76,20 @@ static void send_config_id(void) {
         id_len = CONFIG_RAW_HID_REPORT_SIZE - 1;
     }
     memcpy(&response_buf[1], config_id, id_len);
+
+    hid_viz_send(response_buf, sizeof(response_buf));
+}
+
+static void send_build_commit(void) {
+    memset(response_buf, 0, sizeof(response_buf));
+    response_buf[0] = RSP_BUILD_COMMIT;
+
+    const char *commit = CONFIG_HID_VIZ_BUILD_COMMIT;
+    size_t commit_len = strlen(commit);
+    if (commit_len > CONFIG_RAW_HID_REPORT_SIZE - 1) {
+        commit_len = CONFIG_RAW_HID_REPORT_SIZE - 1;
+    }
+    memcpy(&response_buf[1], commit, commit_len);
 
     hid_viz_send(response_buf, sizeof(response_buf));
 }
@@ -123,6 +141,11 @@ static int command_handler(const zmk_event_t *eh) {
     case CMD_GET_CONFIG_ID:
         LOG_INF("Command: get config ID");
         send_config_id();
+        break;
+
+    case CMD_GET_BUILD_COMMIT:
+        LOG_INF("Command: get build commit");
+        send_build_commit();
         break;
 
     case CMD_SET_LAYER:
