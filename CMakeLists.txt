@@ -27,6 +27,7 @@ if(CONFIG_HID_VIZ)
     if(CONFIG_HID_VIZ_COMMANDS)
         target_sources(app PRIVATE src/command_handler.c)
         target_sources(app PRIVATE src/layer_actions.c)
+        target_sources(app PRIVATE src/bootloader.c)
     endif()
 
     if(CONFIG_HID_VIZ_RGB)

@@ -86,6 +86,17 @@
 #define CMD_LAYER_DEACTIVATE 0xF2   /* core.layer.deactivate{ ref[2], index } */
 #define RSP_CONFIRM          0xF7   /* Action confirmation  { ref[2], ok } */
 
+/* ============================================================
+ * Wire type bytes — restart-into-bootloader (host -> keyboard)
+ *
+ * 0xF0 was picked as the next free byte below the layer block (0xF2-0xF4)
+ * and the manifest pair (0xF8/0xF9); the sibling zl-xlt0v.6 build-info
+ * command takes its own byte elsewhere, and 0xB0 stays untouched.
+ * ============================================================ */
+#define CMD_RESTART_BOOTLOADER 0xF0   /* core.bootloader.restart { target, magic[4] } */
+#define BOOTLOADER_TARGET_LEFT 0x00   /* this (central) half */
+#define BOOTLOADER_TARGET_RIGHT 0x01  /* split peripheral, relayed over split */
+
 /*
  * RSP_MANIFEST_ENTRY report layout
  *   byte[0]   = RSP_MANIFEST_ENTRY (0xF8)
