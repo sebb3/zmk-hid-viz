@@ -136,6 +136,32 @@ Layer 0 is always active regardless of the bitmask. The keyboard deactivates all
 other layers and then activates every layer whose bit is set, allowing the host
 to restore a complete layer stack rather than a single layer.
 
+**Restart into bootloader** (byte[0] = `0xF0`, requires `CONFIG_HID_VIZ_COMMANDS`):
+| Byte | Value | Description |
+|------|-------|-------------|
+| 0 | `0xF0` | Command type (`core.bootloader.restart`) |
+| 1 | target | `0x00` = this (central) half, `0x01` = right half via split relay |
+| 2-5 | `5A 4D 4B 21` | Fixed magic (`ZMK!`); any other value is ignored |
+
+Restarts the target half into its UF2 bootloader with no key combination, so
+a firmware update needs no manual step per half. Target `0x00` runs the same
+`bootload` behavior node the `&bootloader` keymap behavior uses (Adafruit UF2
+GPREGRET magic + reboot). Target `0x01` relays over split from the central
+with the same invoke-behavior mechanism global-locality behaviors use, and the
+peripheral reboots itself. There is no reply — a rebooting half answers
+nothing. The host restarts the right half first: the left (central) half
+carries the Raw HID signal, so once it reboots nothing can reach the right.
+
+Risk: this reboots the keyboard on request, so treat the command with care.
+The magic is an accident guard, not a secret — it is public in this source,
+and any software able to open the Raw HID device can reboot the keyboard.
+The central half additionally ignores the command unless it is USB-powered,
+so a stray command received over BLE-only power never reboots anything;
+peripheral-side USB power cannot be checked over split (the split protocol
+carries no USB state), so the update flow keeps USB cables on both halves.
+Support is advertised in the manifest stream as `core.bootloader.restart`;
+hosts without it fall back to the manual key combination.
+
 **RGB set** (byte[0] = `0xD1`, requires `CONFIG_HID_VIZ_RGB`):
 | Byte | Value | Description |
 |------|-------|-------------|
