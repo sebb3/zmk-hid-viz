@@ -28,7 +28,7 @@
 #define ROLE_TRIGGERS    3   /* Device originates this action (fire-and-forget) */
 
 /* ============================================================
- * Tiers — availability / stability of the capability
+ * Tiers — availability / stability of a capability
  * ============================================================ */
 #define TIER_CORE        0   /* Always present when the module is enabled */
 #define TIER_FW_SPECIFIC 1   /* Present only if the firmware implements it */
@@ -57,6 +57,21 @@
 #define CMD_SET_LAYER        0xFC   /* core.layer.set (full bitmask) */
 
 /* ============================================================
+ * Wire type bytes — build identity (CONFIG_HID_VIZ_COMMANDS)
+ *
+ * The host build stamps the firmware image with the source commit it was
+ * built from (CONFIG_HID_VIZ_BUILD_COMMIT, set by the host build system,
+ * e.g. ZMK Live's Nix build from the flake's shortRev). The host queries it
+ * with CMD_GET_BUILD_COMMIT; the central half answers from its own image
+ * with RSP_BUILD_COMMIT. Raw HID exists only on the central half, so the
+ * peripheral half is never queried directly: both halves are built from the
+ * same source commit in one build, so the central half's commit identifies
+ * the pair.
+ * ============================================================ */
+#define CMD_GET_BUILD_COMMIT 0xF6   /* firmware build-commit query */
+#define RSP_BUILD_COMMIT     0xF5   /* firmware build-commit response */
+
+/* ============================================================
  * Wire type bytes — RGB profile (M5, CONFIG_HID_VIZ_RGB)
  * 0xD2 (core.rgb.setKey) is reserved for QMK RGB Matrix devices and is
  * never implemented or advertised by ZMK — per-key colour on ZMK is
@@ -72,7 +87,7 @@
  * the listening host's config. Per-id fixed nodes advertise as "signal.fire/<id>"
  * so a host scan can enumerate exactly which ids the board fires; the flexible
  * 1-cell &signal form advertises the bare "signal.fire". 0xC1/0xC2 are reserved
- * for a future signal.value / signal.delta (analog / relative input).
+ * for a future signal.value / signal.delta (analog / relative).
  * ============================================================ */
 #define SIGNAL_FIRE          0xC0   /* signal.fire { id:uint8 } — fire-and-forget */
 
@@ -161,7 +176,6 @@ struct hid_viz_cap {
  * The index ORDER here MUST match the `enum:` list in
  * dts/bindings/behaviors/zmk,behavior-hid-viz-emit-fixed.yaml. The wire bytes
  * mirror <dt-bindings/hid_viz/emit.h> (the 2-cell &hid_viz_emit form's params).
- *
  * The HID_VIZ_ACTION_* macros are integer/string literals, so ACTION_* below
  * resolve at compile time and are usable in static initializers (config structs
  * and the HID_VIZ_CAP_REGISTER trigger entries).
